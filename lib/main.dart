@@ -15,7 +15,7 @@ class _MyAppState extends State<MyApp> {
       title: "TODO",
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
-        accentColor: Colors.blue,
+        accentColor: Colors.greenAccent,
       ),
       home: UI(),
     );

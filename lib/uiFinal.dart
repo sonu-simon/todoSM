@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo/contactUs.dart';
+import 'package:todo/search.dart';
 
 class UI extends StatefulWidget {
   @override
@@ -12,6 +14,8 @@ class _UIState extends State<UI> {
   bool validated = true;
   String errtext = "";
   String todoedited = "";
+  String tobesearched = "";
+  int currentIndex = 0;
 
   void addtodo() {
     todoItems.add(todoedited);
@@ -76,8 +80,73 @@ class _UIState extends State<UI> {
                               addtodo();
                             }
                           },
-                          color: Colors.blue,
+                          color: Colors.green[700],
                           child: Text("ADD",
+                              style: TextStyle(
+                                fontSize: 18.0,
+                              )),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          });
+        });
+  }
+
+  void showSearchDialog() {
+    texteditingcontroller.text = "";
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              title: Text(
+                "Search Task",
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  TextField(
+                    controller: texteditingcontroller,
+                    autofocus: true,
+                    onChanged: (_val) {
+                      tobesearched = _val;
+                    },
+                    style: TextStyle(
+                      fontSize: 18.0,
+                    ),
+                    decoration: InputDecoration(
+                      errorText: validated ? null : errtext,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: 10.0,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        RaisedButton(
+                          onPressed: () {
+                            List searchlist = [];
+                            todoItems.forEach((element) {
+                              if (element.contains(tobesearched)) {
+                                searchlist.add(element);
+                              }
+                            });
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Search(searchlist)));
+                          },
+                          color: Colors.green[700],
+                          child: Text("SEARCH",
                               style: TextStyle(
                                 fontSize: 18.0,
                               )),
@@ -95,9 +164,9 @@ class _UIState extends State<UI> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.grey[900],
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.green[700],
         centerTitle: true,
         title: Text(
           "My Tasks",
@@ -105,6 +174,15 @@ class _UIState extends State<UI> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.person_outline),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ContactDetails()),
+            ),
+          )
+        ],
       ),
       body: todoItems.isEmpty
           ? Center(
@@ -117,10 +195,7 @@ class _UIState extends State<UI> {
               itemBuilder: (context, index) {
                 return Card(
                   elevation: 5.0,
-                  margin: EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                    vertical: 5.0,
-                  ),
+                  margin: EdgeInsets.only(left: 10, right: 10.0, top: 10),
                   child: Container(
                     padding: EdgeInsets.all(5.0),
                     child: ListTile(
@@ -146,7 +221,30 @@ class _UIState extends State<UI> {
           Icons.add,
           color: Colors.white,
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.green[700],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: (value) {
+          currentIndex = value;
+          switch (currentIndex) {
+            case 0:
+              showSearchDialog();
+              break;
+            case 1:
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ContactDetails()));
+              break;
+          }
+        },
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.search), title: Text("Search")),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person), title: Text("About Us")),
+        ],
+        unselectedItemColor: Colors.white,
+        selectedItemColor: Colors.white,
       ),
     );
   }
