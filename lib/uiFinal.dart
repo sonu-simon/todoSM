@@ -199,6 +199,7 @@ class _UIState extends State<UI> {
                   child: Container(
                     padding: EdgeInsets.all(5.0),
                     child: ListTile(
+                      leading: Icon(Icons.add),
                       title: Text(
                         todoItems[index],
                         style: TextStyle(
